@@ -672,8 +672,38 @@
         const DASHBOARD_PASSWORD = generateDailyPassword();
         const SESSION_KEY = 'ahrlab_authenticated';
         
-        // Debug info (remove in production if desired)
-        console.log(`Today's password: ${DASHBOARD_PASSWORD}`);
+console.log(`Today's password: ${DASHBOARD_PASSWORD}`);
+
+// Fetch Pi-hole statistics
+async function fetchPiHoleStats() {
+    try {
+        const response = await fetch('http://pihole.ahrlab.net/admin/api.php');
+        const data = await response.json();
+        return {
+            queriesBlocked: data.ads_blocked_today?.toLocaleString() || 'N/A',
+            status: data.status === 'enabled' ? 'Active' : 'Offline'
+        };
+    } catch (error) {
+        console.log('Pi-hole API error:', error);
+        return { queriesBlocked: 'API Error', status: 'Cannot Connect' };
+    }
+}
+
+// Update stats with Pi-hole data
+async function updateStats() {
+    const piHoleData = await fetchPiHoleStats();
+    const blockedElement = document.getElementById('blocked');
+    
+    if (blockedElement && blockedElement.textContent !== piHoleData.queriesBlocked) {
+        blockedElement.textContent = piHoleData.queriesBlocked;
+    }
+}
+
+// Test connection after login and update every 60 seconds
+setTimeout(() => updateStats(), 3000);
+setInterval(updateStats, 60000);
+
+// Auto-logout on tab close (optional - uncomment if desired)
         
         // Elements
         const loginScreen = document.getElementById('loginScreen');
