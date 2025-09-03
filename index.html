@@ -20,6 +20,106 @@
             padding: 20px;
         }
 
+        /* Login Screen Styles */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 100%);
+            z-index: 1000;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-logo {
+            margin-bottom: 2rem;
+        }
+
+        .login-logo svg {
+            filter: drop-shadow(0 4px 8px rgba(0, 212, 255, 0.3));
+        }
+
+        .login-subtitle {
+            color: #888;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .login-input {
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .login-input::placeholder {
+            color: #999;
+        }
+
+        .login-button {
+            padding: 1rem;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .login-error {
+            color: #ff6b6b;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            font-size: 0.9rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Dashboard Styles */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -29,16 +129,44 @@
             text-align: center;
             margin-bottom: 3rem;
             padding: 2rem 0;
+            position: relative;
+        }
+
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .logout-button:hover {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: rgba(255, 107, 107, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .logo-container {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .logo {
-            font-size: 3rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #00d4ff, #0099cc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
+            max-width: 280px;
+            height: auto;
+        }
+
+        .logo svg {
+            filter: drop-shadow(0 4px 8px rgba(0, 212, 255, 0.3));
         }
 
         .subtitle {
@@ -211,10 +339,6 @@
         }
 
         @media (max-width: 768px) {
-            .logo {
-                font-size: 2rem;
-            }
-            
             .services-grid {
                 grid-template-columns: 1fr;
             }
@@ -222,84 +346,388 @@
             .service-card {
                 padding: 1.5rem;
             }
+
+            .login-card {
+                margin: 1rem;
+                padding: 2rem;
+            }
+
+            .logout-button {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 1rem;
+            }
+
+            .logo svg {
+                width: 240px;
+                height: auto;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">AHR LAB</div>
-            <div class="subtitle">Personal Homelab Dashboard</div>
-            <div class="status-indicator">
-                <div class="status-dot"></div>
-                <span>All Systems Operational</span>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <div class="login-logo">
+                <svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#0099cc;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#0066aa;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#4ecdc4;stop-opacity:1" />
+                        </linearGradient>
+                        <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.8" />
+                            <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0" />
+                        </radialGradient>
+                        <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#00d4ff" flood-opacity="0.3"/>
+                        </filter>
+                        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge> 
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <circle cx="40" cy="40" r="35" fill="url(#glowGradient)" opacity="0.3">
+                        <animate attributeName="r" values="35;37;35" dur="4s" repeatCount="indefinite"/>
+                    </circle>
+                    <polygon points="40,10 55,20 55,35 40,45 25,35 25,20" 
+                            fill="url(#mainGradient)" 
+                            stroke="#00d4ff" 
+                            stroke-width="2" 
+                            filter="url(#dropShadow)">
+                        <animateTransform 
+                        attributeName="transform" 
+                        type="rotate" 
+                        values="0 40 27.5;360 40 27.5" 
+                        dur="20s" 
+                        repeatCount="indefinite"/>
+                    </polygon>
+                    <g stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.8">
+                        <line x1="40" y1="15" x2="40" y2="25">
+                            <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="40" y1="30" x2="40" y2="40">
+                            <animate attributeName="stroke-opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="30" y1="27.5" x2="35" y2="27.5">
+                            <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="45" y1="27.5" x2="50" y2="27.5">
+                            <animate attributeName="stroke-opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+                        </line>
+                        <circle cx="40" cy="20" r="1.5" fill="#ffffff">
+                            <animate attributeName="fill-opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="40" cy="35" r="1.5" fill="#ffffff">
+                            <animate attributeName="fill-opacity" values="1;0.5;1" dur="1s" repeatCount="indefinite"/>
+                        </circle>
+                    </g>
+                    <text x="90" y="35" 
+                        font-family="'Segoe UI', Arial, sans-serif" 
+                        font-size="24" 
+                        font-weight="bold" 
+                        fill="url(#mainGradient)" 
+                        filter="url(#glow)">AHR</text>
+                    <text x="90" y="55" 
+                        font-family="'Segoe UI', Arial, sans-serif" 
+                        font-size="16" 
+                        font-weight="300" 
+                        fill="#888888" 
+                        letter-spacing="3px">LAB</text>
+                    <line x1="75" y1="40" x2="85" y2="40" 
+                        stroke="url(#accentGradient)" 
+                        stroke-width="2" 
+                        opacity="0.6">
+                        <animate attributeName="stroke-dasharray" values="0,20;20,0;0,20" dur="3s" repeatCount="indefinite"/>
+                    </line>
+                    <g opacity="0.4">
+                        <circle r="2" fill="#00d4ff">
+                            <animateMotion dur="4s" repeatCount="indefinite" rotate="auto">
+                                <path d="M75,40 Q100,20 140,40 Q160,60 180,40"/>
+                            </animateMotion>
+                            <animate attributeName="opacity" values="0;1;0" dur="4s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle r="1.5" fill="#4ecdc4">
+                            <animateMotion dur="3s" repeatCount="indefinite" rotate="auto" begin="1s">
+                                <path d="M75,40 Q90,60 120,40 Q150,20 180,40"/>
+                            </animateMotion>
+                            <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite" begin="1s"/>
+                        </circle>
+                    </g>
+                </svg>
             </div>
-        </header>
-
-        <div class="stats-section">
-            <h2 class="stats-title">System Overview</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-value" id="uptime">99.8%</div>
-                    <div class="stat-label">Uptime</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="services">6</div>
-                    <div class="stat-label">Active Services</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="blocked">2.1K</div>
-                    <div class="stat-label">Queries Blocked Today</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="storage">1.2TB</div>
-                    <div class="stat-label">Storage Used</div>
-                </div>
+            <div class="login-subtitle">Enter access code to continue</div>
+            <form class="login-form" id="loginForm">
+                <input 
+                    type="password" 
+                    id="passwordInput" 
+                    class="login-input" 
+                    placeholder="Access code"
+                    autocomplete="current-password"
+                    required
+                >
+                <button type="submit" class="login-button">
+                    <i class="fas fa-unlock"></i> Access Dashboard
+                </button>
+            </form>
+            <div id="loginError" class="login-error hidden">
+                <i class="fas fa-exclamation-triangle"></i> Incorrect access code. Please try again.
             </div>
         </div>
+    </div>
 
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="service-header">
-                    <div class="service-icon pihole">
-                        <i class="fas fa-shield-alt"></i>
+    <!-- Dashboard Content -->
+    <div id="dashboard" class="hidden">
+        <div class="container">
+            <header>
+                <button id="logoutBtn" class="logout-button">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+
+                <div class="logo-container">
+                    <svg class="logo" width="280" height="100" viewBox="0 0 280 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="mainGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                <stop offset="50%" style="stop-color:#0099cc;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0066aa;stop-opacity:1" />
+                            </linearGradient>
+                            <linearGradient id="accentGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#4ecdc4;stop-opacity:1" />
+                            </linearGradient>
+                            <radialGradient id="glowGradient2" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0" />
+                            </radialGradient>
+                            <filter id="dropShadow2" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#00d4ff" flood-opacity="0.3"/>
+                            </filter>
+                            <filter id="glow2" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                <feMerge> 
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <circle cx="50" cy="50" r="44" fill="url(#glowGradient2)" opacity="0.3">
+                            <animate attributeName="r" values="44;47;44" dur="4s" repeatCount="indefinite"/>
+                        </circle>
+                        <polygon points="50,15 65,25 65,40 50,55 35,40 35,25" 
+                                fill="url(#mainGradient2)" 
+                                stroke="#00d4ff" 
+                                stroke-width="2" 
+                                filter="url(#dropShadow2)">
+                            <animateTransform 
+                            attributeName="transform" 
+                            type="rotate" 
+                            values="0 50 35;360 50 35" 
+                            dur="20s" 
+                            repeatCount="indefinite"/>
+                        </polygon>
+                        <g stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.8">
+                            <line x1="50" y1="20" x2="50" y2="30">
+                                <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+                            </line>
+                            <line x1="50" y1="40" x2="50" y2="50">
+                                <animate attributeName="stroke-opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+                            </line>
+                            <line x1="40" y1="35" x2="45" y2="35">
+                                <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
+                            </line>
+                            <line x1="55" y1="35" x2="60" y2="35">
+                                <animate attributeName="stroke-opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+                            </line>
+                            <circle cx="50" cy="25" r="1.5" fill="#ffffff">
+                                <animate attributeName="fill-opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite"/>
+                            </circle>
+                            <circle cx="50" cy="45" r="1.5" fill="#ffffff">
+                                <animate attributeName="fill-opacity" values="1;0.5;1" dur="1s" repeatCount="indefinite"/>
+                            </circle>
+                        </g>
+                        <text x="120" y="45" 
+                            font-family="'Segoe UI', Arial, sans-serif" 
+                            font-size="32" 
+                            font-weight="bold" 
+                            fill="url(#mainGradient2)" 
+                            filter="url(#glow2)">AHR</text>
+                        <text x="120" y="70" 
+                            font-family="'Segoe UI', Arial, sans-serif" 
+                            font-size="20" 
+                            font-weight="300" 
+                            fill="#888888" 
+                            letter-spacing="4px">LAB</text>
+                        <line x1="95" y1="50" x2="110" y2="50" 
+                            stroke="url(#accentGradient2)" 
+                            stroke-width="2" 
+                            opacity="0.6">
+                            <animate attributeName="stroke-dasharray" values="0,20;20,0;0,20" dur="3s" repeatCount="indefinite"/>
+                        </line>
+                        <g opacity="0.4">
+                            <circle r="2" fill="#00d4ff">
+                                <animateMotion dur="4s" repeatCount="indefinite" rotate="auto">
+                                    <path d="M95,50 Q130,25 180,50 Q220,75 260,50"/>
+                                </animateMotion>
+                                <animate attributeName="opacity" values="0;1;0" dur="4s" repeatCount="indefinite"/>
+                            </circle>
+                            <circle r="1.5" fill="#4ecdc4">
+                                <animateMotion dur="3s" repeatCount="indefinite" rotate="auto" begin="1s">
+                                    <path d="M95,50 Q120,75 160,50 Q200,25 260,50"/>
+                                </animateMotion>
+                                <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite" begin="1s"/>
+                            </circle>
+                        </g>
+                    </svg>
+                </div>
+                
+                <div class="subtitle">Personal Homelab Dashboard</div>
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>All Systems Operational</span>
+                </div>
+            </header>
+
+            <div class="stats-section">
+                <h2 class="stats-title">System Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="uptime">99.8%</div>
+                        <div class="stat-label">Uptime</div>
                     </div>
-                    <div class="service-title">Pi-hole</div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="services">6</div>
+                        <div class="stat-label">Active Services</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="blocked">2.1K</div>
+                        <div class="stat-label">Queries Blocked Today</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="storage">1.2TB</div>
+                        <div class="stat-label">Storage Used</div>
+                    </div>
                 </div>
-                <div class="service-description">
-                    Network-wide ad blocking and DNS filtering. Protecting your network from unwanted content and improving browsing performance.
-                </div>
-                <a href="http://pihole.ahrlab.net" class="service-link">
-                    <i class="fas fa-external-link-alt"></i>
-                    Access Pi-hole
-                </a>
             </div>
 
-            <div class="service-card">
-                <div class="service-header">
-                    <div class="service-icon llm">
-                        <i class="fas fa-robot"></i>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-icon pihole">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="service-title">Pi-hole</div>
                     </div>
-                    <div class="service-title">Local LLM</div>
+                    <div class="service-description">
+                        Network-wide ad blocking and DNS filtering. Protecting your network from unwanted content and improving browsing performance.
+                    </div>
+                    <a href="http://pihole.ahrlab.net" class="service-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        Access Pi-hole
+                    </a>
                 </div>
-                <div class="service-description">
-                    Self-hosted large language model for private AI assistance. Chat with AI while keeping your data completely local and secure.
-                </div>
-                <a href="http://llm.ahrlab.net" class="service-link">
-                    <i class="fas fa-external-link-alt"></i>
-                    Chat with AI
-                </a>
-            </div>
 
-        <footer>
-            <p>&copy; 2025 AHR Lab. Self-hosted. </p>
-            <p>Built for learning, privacy, and complete control over your digital life.</p>
-        </footer>
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-icon llm">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="service-title">Local LLM</div>
+                    </div>
+                    <div class="service-description">
+                        Self-hosted large language model for private AI assistance. Chat with AI while keeping your data completely local and secure.
+                    </div>
+                    <a href="http://llm.ahrlab.net" class="service-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        Chat with AI
+                    </a>
+                </div>
+
+            <footer>
+                <p>&copy; 2025 AHR Lab. Self-hosted and secured. </p>
+                <p>Built for learning, privacy, and complete control over my digital life.</p>
+            </footer>
+        </div>
     </div>
 
     <script>
-        // Add some dynamic effects
-        document.addEventListener('DOMContentLoaded', function() {
+        // Configuration - CHANGE THIS PASSWORD!
+        const DASHBOARD_PASSWORD = 'ahrlab2025'; // <-- Change this!
+        const SESSION_KEY = 'ahrlab_authenticated';
+        
+        // Elements
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('loginForm');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginError = document.getElementById('loginError');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Check if user is already authenticated
+        function checkAuthentication() {
+            const isAuthenticated = sessionStorage.getItem(SESSION_KEY) === 'true';
+            if (isAuthenticated) {
+                showDashboard();
+            } else {
+                showLogin();
+            }
+        }
+
+        // Show login screen
+        function showLogin() {
+            loginScreen.classList.remove('hidden');
+            dashboard.classList.add('hidden');
+            passwordInput.focus();
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            loginScreen.classList.add('hidden');
+            dashboard.classList.remove('hidden');
+            initializeDashboard();
+        }
+
+        // Handle login
+        function handleLogin(e) {
+            e.preventDefault();
+            const password = passwordInput.value.trim();
+            
+            if (password === DASHBOARD_PASSWORD) {
+                sessionStorage.setItem(SESSION_KEY, 'true');
+                loginError.classList.add('hidden');
+                showDashboard();
+            } else {
+                loginError.classList.remove('hidden');
+                passwordInput.value = '';
+                passwordInput.focus();
+                
+                // Shake animation
+                loginError.style.animation = 'none';
+                setTimeout(() => {
+                    loginError.style.animation = 'shake 0.5s ease-in-out';
+                }, 10);
+            }
+        }
+
+        // Handle logout
+        function handleLogout() {
+            sessionStorage.removeItem(SESSION_KEY);
+            showLogin();
+            passwordInput.value = '';
+        }
+
+        // Initialize dashboard animations
+        function initializeDashboard() {
             // Animate stats on load
             const statValues = document.querySelectorAll('.stat-value');
             statValues.forEach(stat => {
@@ -316,25 +744,45 @@
                     }, index * 200);
                 });
             }, 500);
+        }
 
-            // Update time dynamically (example)
-            function updateTime() {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString();
-                // You could update a time display here if you add one
+        // Event listeners
+        loginForm.addEventListener('submit', handleLogin);
+        logoutBtn.addEventListener('click', handleLogout);
+
+        // Add shake animation for errors
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
             }
+        `;
+        document.head.appendChild(style);
 
-            setInterval(updateTime, 1000);
-        });
+        // Initialize
+        document.addEventListener('DOMContentLoaded', checkAuthentication);
 
-        // Add click tracking for analytics (optional)
-        document.querySelectorAll('.service-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                const serviceName = this.closest('.service-card').querySelector('.service-title').textContent;
+        // Service link tracking
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.service-link')) {
+                const serviceName = e.target.closest('.service-card').querySelector('.service-title').textContent;
                 console.log(`Accessing service: ${serviceName}`);
-                // You could send this to your analytics service
-            });
+            }
         });
+
+        // Enter key support
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin(e);
+            }
+        });
+
+        // Auto-logout on tab close (optional - uncomment if desired)
+        // window.addEventListener('beforeunload', function() {
+        //     sessionStorage.removeItem(SESSION_KEY);
+        // });
     </script>
 </body>
 </html>
