@@ -745,6 +745,9 @@
         <div class="container">
             <header>
                 <div class="header-actions">
+                    <button class="header-button tooltip" data-tooltip="Refresh Stats" onclick="updateStats()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
                     <button id="logoutBtn" class="header-button logout-button">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
@@ -797,6 +800,10 @@
                         <div class="action-icon"><i class="fas fa-network-wired"></i></div>
                         <div>Network Tools</div>
                     </button>
+                    <button class="action-button" onclick="alert('System monitor coming soon!')">
+                        <div class="action-icon"><i class="fas fa-chart-line"></i></div>
+                        <div>System Monitor</div>
+                    </button>
                 </div>
             </div>
 
@@ -827,7 +834,7 @@
                             <span class="stat-label">Total Queries</span>
                         </div>
                     </div>
-                    <a href="http://pihole.ahrlab.net" class="service-link" target="_blank">
+                    <a href="http://localhost:8081/admin/" class="service-link" target="_blank">
                         <i class="fas fa-external-link-alt"></i>
                         Open Pi-hole Dashboard
                     </a>
