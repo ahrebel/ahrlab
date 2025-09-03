@@ -1,100 +1,67 @@
-# AHR Lab - Homelab Dashboard
+# AHR Lab Dashboard
 
-A modern, responsive web dashboard for managing and accessing your homelab services. Built with vanilla HTML, CSS, and JavaScript for easy deployment on GitHub Pages.
+A modern homelab dashboard for accessing self-hosted services. Single HTML file with responsive design and secure access control.
 
 ## Features
 
-- **Clean, Modern Design** - Glassmorphism UI with dark theme
-- **Responsive Layout** - Works perfectly on desktop, tablet, and mobile
-- **Service Cards** - Quick access to all your homelab services
-- **System Overview** - At-a-glance stats and status indicators
-- **Smooth Animations** - Subtle hover effects and transitions
-- **Single File** - No build process required, just deploy and go
+- Secure login with session-based authentication
+- Responsive design for desktop and mobile
+- Service cards with status indicators
+- Quick actions panel
+- Glassmorphic UI with animated background
 
-## Services Included
+## Installation
 
-The dashboard comes pre-configured with cards that I currently use:
+### GitHub Pages
+1. Fork this repository
+2. Enable GitHub Pages in repository settings
+3. Access at `https://[username].github.io/ahrlab`
 
-- 🛡️ **Pi-hole** - Network ad blocking and DNS filtering
-- 🤖 **Local LLM** - Self-hosted AI chat interface
+### Self-Hosted
+Simply host the `index.html` file on any web server.
 
-## Quick Start
-
-1. **Clone this repository**
-   ```bash
-   git clone https://github.com/ahrebel/ahrlab.net.git
-   ```
-
-2. **Customize your services**
-   - Edit `index.html`
-   - Update subdomain URLs to match your setup
-   - Modify service descriptions and icons as needed
-
-3. **Deploy to GitHub Pages**
-   - Push to your repository
-   - Enable GitHub Pages in repository settings
-   - Optionally configure custom domain
-
-## Customization
-
-### Adding a New Service
-
-Copy an existing service card and modify:
-
-```html
-<div class="service-card">
-    <div class="service-header">
-        <div class="service-icon your-color-class">
-            <i class="fas fa-your-icon"></i>
-        </div>
-        <div class="service-title">Your Service</div>
-    </div>
-    <div class="service-description">
-        Description of your service...
-    </div>
-    <a href="http://yourservice.ahrlab.net" class="service-link">
-        <i class="fas fa-external-link-alt"></i>
-        Access Service
-    </a>
-</div>
+### Local Development
+```bash
+python -m http.server 8000
+# Visit http://localhost:8000
 ```
 
-### Updating Stats
+## Configuration
 
-Modify the values in the stats section or make them dynamic by connecting to your monitoring APIs.
+### Services
+Edit the service cards in the `services-grid` section to match your infrastructure. Each card includes:
+- Service name and icon
+- Description
+- Status indicator
+- Direct link to service
+
+### Quick Actions
+Modify the quick action buttons in the `quick-actions` section for frequently accessed tools.
 
 ### Styling
+Update CSS variables in the `:root` section to customize colors and theme.
 
-All styles are contained in the `<style>` section. Key variables:
-- Color scheme: Update gradient colors and accent colors
-- Service icons: Modify `.service-icon` background gradients
-- Layout: Adjust grid columns in `.services-grid`
+## Structure
 
-## Domain Setup
+```
+index.html          # Single-file dashboard
+README.md           # Documentation
+```
 
-If using a custom domain like `ahrlab.net`:
+## Requirements
 
-1. Add your domain in GitHub Pages settings
-2. Create DNS records:
-   - `CNAME` record: `ahrlab.net` → `yourusername.github.io`
-   - `CNAME` record: `www.ahrlab.net` → `yourusername.github.io`
+- Modern web browser (Chrome 88+, Firefox 78+, Safari 14+)
+- No server-side dependencies
+- Font Awesome CDN for icons
 
-## Tech Stack
+## Security
 
-- **HTML5** - Semantic structure
-- **CSS3** - Modern styling with flexbox/grid
-- **JavaScript** - Interactive animations
-- **Font Awesome** - Icon library
-- **GitHub Pages** - Free hosting
+The dashboard includes a login system with session storage. Configure authentication according to your security requirements.
 
 ## License
 
-MIT License - Feel free to use, modify, and distribute as needed.
+MIT License
 
 ## Contributing
 
-This is a personal homelab dashboard, but feel free to fork and create your own version! Pull requests for general improvements are welcome.
-
----
-
-**Built for the homelab community**
+Pull requests are welcome for bug fixes and improvements.
