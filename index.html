@@ -198,6 +198,12 @@
             50% { opacity: 0.5; }
         }
 
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -255,12 +261,13 @@
             color: white;
         }
 
-        .pihole { background: linear-gradient(45deg, #96060c, #d20a13); }
-        .llm { background: linear-gradient(45deg, #7c3aed, #a855f7); }
-        .dashboard { background: linear-gradient(45deg, #059669, #10b981); }
-        .media { background: linear-gradient(45deg, #dc2626, #ef4444); }
-        .files { background: linear-gradient(45deg, #2563eb, #3b82f6); }
-        .monitoring { background: linear-gradient(45deg, #ea580c, #f97316); }
+        .pihole { 
+            background: linear-gradient(45deg, #96060c, #d20a13); 
+        }
+        
+        .llm { 
+            background: linear-gradient(45deg, #7c3aed, #a855f7); 
+        }
 
         .service-title {
             font-size: 1.3rem;
@@ -606,11 +613,11 @@
                         <div class="stat-label">Uptime</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value" id="services">6</div>
+                        <div class="stat-value" id="services">2</div>
                         <div class="stat-label">Active Services</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value" id="blocked">2.1K</div>
+                        <div class="stat-value" id="blocked">-</div>
                         <div class="stat-label">Queries Blocked Today</div>
                     </div>
                     <div class="stat-item">
@@ -652,16 +659,17 @@
                         Chat with AI
                     </a>
                 </div>
+            </div>
 
             <footer>
-                <p>&copy; 2025 AHR Lab. Self-hosted and secured(ish). </p>
+                <p>&copy; 2025 AHR Lab. Self-hosted and secured(ish).</p>
                 <p>Built for learning, privacy, and complete control over my digital life.</p>
             </footer>
         </div>
     </div>
 
     <script>
-        // Configuration - Adaptive Password System (Option 1: ahrMMDD)
+        // Configuration - Daily password system
         function generateDailyPassword() {
             const today = new Date();
             const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -672,39 +680,47 @@
         const DASHBOARD_PASSWORD = generateDailyPassword();
         const SESSION_KEY = 'ahrlab_authenticated';
         
-console.log(`Today's password: ${DASHBOARD_PASSWORD}`);
+        // Fetch Pi-hole statistics (with better error handling)
+        async function fetchPiHoleStats() {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+                
+                const response = await fetch('http://pihole.ahrlab.net/admin/api.php', {
+                    signal: controller.signal,
+                    mode: 'cors'
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                return {
+                    queriesBlocked: data.ads_blocked_today?.toLocaleString() || '0',
+                    status: data.status === 'enabled' ? 'Active' : 'Offline'
+                };
+            } catch (error) {
+                console.log('Pi-hole connection failed:', error.message);
+                return { 
+                    queriesBlocked: 'Offline', 
+                    status: 'Connection Failed' 
+                };
+            }
+        }
 
-// Fetch Pi-hole statistics
-async function fetchPiHoleStats() {
-    try {
-        const response = await fetch('http://pihole.ahrlab.net/admin/api.php');
-        const data = await response.json();
-        return {
-            queriesBlocked: data.ads_blocked_today?.toLocaleString() || 'N/A',
-            status: data.status === 'enabled' ? 'Active' : 'Offline'
-        };
-    } catch (error) {
-        console.log('Pi-hole API error:', error);
-        return { queriesBlocked: 'API Error', status: 'Cannot Connect' };
-    }
-}
+        // Update stats with Pi-hole data
+        async function updateStats() {
+            const piHoleData = await fetchPiHoleStats();
+            const blockedElement = document.getElementById('blocked');
+            
+            if (blockedElement) {
+                blockedElement.textContent = piHoleData.queriesBlocked;
+            }
+        }
 
-// Update stats with Pi-hole data
-async function updateStats() {
-    const piHoleData = await fetchPiHoleStats();
-    const blockedElement = document.getElementById('blocked');
-    
-    if (blockedElement && blockedElement.textContent !== piHoleData.queriesBlocked) {
-        blockedElement.textContent = piHoleData.queriesBlocked;
-    }
-}
-
-// Test connection after login and update every 60 seconds
-setTimeout(() => updateStats(), 3000);
-setInterval(updateStats, 60000);
-
-// Auto-logout on tab close (optional - uncomment if desired)
-        
         // Elements
         const loginScreen = document.getElementById('loginScreen');
         const dashboard = document.getElementById('dashboard');
@@ -766,7 +782,7 @@ setInterval(updateStats, 60000);
             passwordInput.value = '';
         }
 
-        // Initialize dashboard animations
+        // Initialize dashboard animations and data
         function initializeDashboard() {
             // Animate stats on load
             const statValues = document.querySelectorAll('.stat-value');
@@ -784,25 +800,17 @@ setInterval(updateStats, 60000);
                     }, index * 200);
                 });
             }, 500);
+
+            // Load Pi-hole stats after a short delay
+            setTimeout(() => updateStats(), 2000);
+            
+            // Update stats every 60 seconds
+            setInterval(updateStats, 60000);
         }
 
         // Event listeners
         loginForm.addEventListener('submit', handleLogin);
         logoutBtn.addEventListener('click', handleLogout);
-
-        // Add shake animation for errors
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-10px); }
-                75% { transform: translateX(10px); }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', checkAuthentication);
 
         // Service link tracking
         document.addEventListener('click', function(e) {
@@ -819,10 +827,8 @@ setInterval(updateStats, 60000);
             }
         });
 
-        // Auto-logout on tab close (optional - uncomment if desired)
-        // window.addEventListener('beforeunload', function() {
-        //     sessionStorage.removeItem(SESSION_KEY);
-        // });
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', checkAuthentication);
     </script>
 </body>
 </html>
