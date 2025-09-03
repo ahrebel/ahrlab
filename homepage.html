@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AHR Lab - Homelab Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #888;
+            margin-bottom: 1rem;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 255, 0, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .service-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .pihole { background: linear-gradient(45deg, #96060c, #d20a13); }
+        .llm { background: linear-gradient(45deg, #7c3aed, #a855f7); }
+        .dashboard { background: linear-gradient(45deg, #059669, #10b981); }
+        .media { background: linear-gradient(45deg, #dc2626, #ef4444); }
+        .files { background: linear-gradient(45deg, #2563eb, #3b82f6); }
+        .monitoring { background: linear-gradient(45deg, #ea580c, #f97316); }
+
+        .service-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .service-description {
+            color: #ccc;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .service-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .service-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .stats-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .stats-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .stat-label {
+            color: #888;
+            margin-top: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: #666;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">AHR LAB</div>
+            <div class="subtitle">Personal Homelab Dashboard</div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>All Systems Operational</span>
+            </div>
+        </header>
+
+        <div class="stats-section">
+            <h2 class="stats-title">System Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="uptime">99.8%</div>
+                    <div class="stat-label">Uptime</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="services">6</div>
+                    <div class="stat-label">Active Services</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="blocked">2.1K</div>
+                    <div class="stat-label">Queries Blocked Today</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="storage">1.2TB</div>
+                    <div class="stat-label">Storage Used</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon pihole">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="service-title">Pi-hole</div>
+                </div>
+                <div class="service-description">
+                    Network-wide ad blocking and DNS filtering. Protecting your network from unwanted content and improving browsing performance.
+                </div>
+                <a href="http://pihole.ahrlab.net" class="service-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    Access Pi-hole
+                </a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon llm">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="service-title">Local LLM</div>
+                </div>
+                <div class="service-description">
+                    Self-hosted large language model for private AI assistance. Chat with AI while keeping your data completely local and secure.
+                </div>
+                <a href="http://llm.ahrlab.net" class="service-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    Chat with AI
+                </a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="service-title">System Monitor</div>
+                </div>
+                <div class="service-description">
+                    Real-time system monitoring and performance metrics. Keep track of server health, resource usage, and network status.
+                </div>
+                <a href="http://monitor.ahrlab.net" class="service-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    View Metrics
+                </a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon media">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="service-title">Media Center</div>
+                </div>
+                <div class="service-description">
+                    Personal media streaming server. Access your movies, TV shows, music, and photos from anywhere in your network.
+                </div>
+                <a href="http://media.ahrlab.net" class="service-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    Stream Media
+                </a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon files">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <div class="service-title">File Storage</div>
+                </div>
+                <div class="service-description">
+                    Personal cloud storage solution. Sync, share, and access your files securely from any device with complete privacy control.
+                </div>
+                <a href="http://files.ahrlab.net" class="service-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    Access Files
+                </a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon monitoring">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="service-title">Network Analytics</div>
+                </div>
+                <div class="service-description">
+                    Comprehensive network traffic analysis and bandwidth monitoring. Understand your network usage patterns and optimize performance.
+                </div>
+                <a href="http://analytics.ahrlab.net" class="service-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    View Analytics
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 AHR Lab. Self-hosted with ❤️</p>
+            <p>Built for learning, privacy, and complete control over your digital life.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Add some dynamic effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stats on load
+            const statValues = document.querySelectorAll('.stat-value');
+            statValues.forEach(stat => {
+                stat.style.opacity = '0';
+                stat.style.transform = 'translateY(20px)';
+            });
+
+            setTimeout(() => {
+                statValues.forEach((stat, index) => {
+                    setTimeout(() => {
+                        stat.style.transition = 'all 0.6s ease';
+                        stat.style.opacity = '1';
+                        stat.style.transform = 'translateY(0)';
+                    }, index * 200);
+                });
+            }, 500);
+
+            // Update time dynamically (example)
+            function updateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString();
+                // You could update a time display here if you add one
+            }
+
+            setInterval(updateTime, 1000);
+        });
+
+        // Add click tracking for analytics (optional)
+        document.querySelectorAll('.service-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const serviceName = this.closest('.service-card').querySelector('.service-title').textContent;
+                console.log(`Accessing service: ${serviceName}`);
+                // You could send this to your analytics service
+            });
+        });
+    </script>
+</body>
+</html>
