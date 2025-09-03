@@ -638,7 +638,7 @@
                     <div class="service-description">
                         Network-wide ad blocking and DNS filtering. Protecting your network from unwanted content and improving browsing performance.
                     </div>
-                    <a href="http://pihole.ahrlab.net" class="service-link">
+                    <a href="http://localhost:8081/admin/" class="service-link">
                         <i class="fas fa-external-link-alt"></i>
                         Access Pi-hole
                     </a>
@@ -680,44 +680,70 @@
         const DASHBOARD_PASSWORD = generateDailyPassword();
         const SESSION_KEY = 'ahrlab_authenticated';
         
-        // Fetch Pi-hole statistics (with better error handling)
+        // Updated Pi-hole stats with better error handling
         async function fetchPiHoleStats() {
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-                
-                const response = await fetch('http://pihole.ahrlab.net/admin/api.php', {
-                    signal: controller.signal,
-                    mode: 'cors'
-                });
-                
-                clearTimeout(timeoutId);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
+            // List of possible Pi-hole locations to try
+            const piHoleEndpoints = [
+                'http://10.10.200.20/admin/api.php?summary',
+                'http://pi-hole.local/admin/api.php?summary', 
+                'http://pihole.local/admin/api.php?summary',
+                'http://192.168.1.100/admin/api.php?summary',
+                'http://localhost:8080/admin/api.php?summary'  // if running locally
+            ];
+
+            for (const endpoint of piHoleEndpoints) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 2000);
+                    
+                    const response = await fetch(endpoint, {
+                        signal: controller.signal,
+                        mode: 'no-cors'  // Avoid CORS issues
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        return {
+                            queriesBlocked: data.ads_blocked_today?.toLocaleString() || '0',
+                            status: 'Connected'
+                        };
+                    }
+                } catch (error) {
+                    console.log(`Failed to reach ${endpoint}:`, error.message);
+                    continue; // Try next endpoint
                 }
-                
-                const data = await response.json();
-                return {
-                    queriesBlocked: data.ads_blocked_today?.toLocaleString() || '0',
-                    status: data.status === 'enabled' ? 'Active' : 'Offline'
-                };
-            } catch (error) {
-                console.log('Pi-hole connection failed:', error.message);
-                return { 
-                    queriesBlocked: 'Offline', 
-                    status: 'Connection Failed' 
-                };
             }
+
+            // All endpoints failed - return network unreachable status
+            return { 
+                queriesBlocked: 'Network Unreachable', 
+                status: 'Pi-hole Offline' 
+            };
         }
 
-        // Update stats with Pi-hole data
+        // Update stats
         async function updateStats() {
             const piHoleData = await fetchPiHoleStats();
             const blockedElement = document.getElementById('blocked');
             
             if (blockedElement) {
                 blockedElement.textContent = piHoleData.queriesBlocked;
+            }
+
+            // Update status indicator if Pi-hole is unreachable
+            if (piHoleData.status === 'Pi-hole Offline') {
+                const statusIndicator = document.querySelector('.status-indicator');
+                const statusText = statusIndicator.querySelector('span');
+                const statusDot = statusIndicator.querySelector('.status-dot');
+                
+                if (statusText && statusDot) {
+                    statusText.textContent = 'Pi-hole Connection Issues';
+                    statusDot.style.background = '#ff6b6b';
+                    statusIndicator.style.background = 'rgba(255, 107, 107, 0.1)';
+                    statusIndicator.style.borderColor = 'rgba(255, 107, 107, 0.3)';
+                }
             }
         }
 
