@@ -468,34 +468,6 @@
             font-size: 0.95rem;
         }
 
-        .service-stats {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
-            padding: 1rem 0;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .stat-item {
-            flex: 1;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 0.25rem;
-        }
-
         .service-link {
             display: inline-flex;
             align-items: center;
@@ -745,9 +717,6 @@
         <div class="container">
             <header>
                 <div class="header-actions">
-                    <button class="header-button tooltip" data-tooltip="Refresh Stats" onclick="updateStats()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
                     <button id="logoutBtn" class="header-button logout-button">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
@@ -817,22 +786,12 @@
                             <div class="service-title">Pi-hole</div>
                             <div class="service-status">
                                 <div class="status-badge"></div>
-                                <span id="piholeStatus">Online</span>
+                                <span>Online</span>
                             </div>
                         </div>
                     </div>
                     <div class="service-description">
                         Network-wide ad blocking and DNS filtering system protecting all devices on your network from unwanted content, tracking, and malicious domains.
-                    </div>
-                    <div class="service-stats">
-                        <div class="stat-item">
-                            <span class="stat-value" id="blockedQueries">-</span>
-                            <span class="stat-label">Blocked Today</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value" id="totalQueries">-</span>
-                            <span class="stat-label">Total Queries</span>
-                        </div>
                     </div>
                     <a href="http://localhost:8081/admin/" class="service-link" target="_blank">
                         <i class="fas fa-external-link-alt"></i>
@@ -855,16 +814,6 @@
                     </div>
                     <div class="service-description">
                         Private AI assistant running locally on your hardware. Get intelligent responses while maintaining complete data privacy and control.
-                    </div>
-                    <div class="service-stats">
-                        <div class="stat-item">
-                            <span class="stat-value">100%</span>
-                            <span class="stat-label">Privacy</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value">Local</span>
-                            <span class="stat-label">Processing</span>
-                        </div>
                     </div>
                     <a href="http://llm.ahrlab.net" class="service-link" target="_blank">
                         <i class="fas fa-external-link-alt"></i>
@@ -917,106 +866,6 @@
         
         const DASHBOARD_PASSWORD = generateDailyPassword();
         const SESSION_KEY = 'ahrlab_authenticated';
-        
-        // Pi-hole stats function
-        async function fetchPiHoleStats() {
-            const statusElement = document.getElementById('piholeStatus');
-            const blockedElement = document.getElementById('blockedQueries');
-            const totalElement = document.getElementById('totalQueries');
-            
-            try {
-                // Show loading state
-                blockedElement.innerHTML = '<span class="loading"></span>';
-                totalElement.innerHTML = '<span class="loading"></span>';
-                
-                const response = await fetch('http://localhost:3001', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.error) {
-                    throw new Error(data.message || 'API error');
-                }
-                
-                // Update stats with animation
-                animateValue(blockedElement, 0, data.ads_blocked_today || 0, 1000);
-                animateValue(totalElement, 0, data.dns_queries_today || 0, 1000);
-                statusElement.textContent = 'Online';
-                statusElement.style.color = 'var(--success)';
-                
-                return {
-                    status: 'Connected',
-                    blocked: data.ads_blocked_today || 0,
-                    total: data.dns_queries_today || 0,
-                    percent: data.percent_blocked || 0
-                };
-                
-            } catch (error) {
-                console.error('Pi-hole API error:', error);
-                blockedElement.textContent = 'N/A';
-                totalElement.textContent = 'N/A';
-                statusElement.textContent = 'Offline';
-                statusElement.style.color = 'var(--accent)';
-                
-                return { 
-                    status: 'Offline',
-                    blocked: 0,
-                    total: 0,
-                    percent: 0
-                };
-            }
-        }
-
-        // Animate number counting
-        function animateValue(element, start, end, duration) {
-            const startTimestamp = Date.now();
-            const step = () => {
-                const currentTimestamp = Date.now();
-                const progress = Math.min((currentTimestamp - startTimestamp) / duration, 1);
-                const current = Math.floor(progress * (end - start) + start);
-                element.textContent = current.toLocaleString();
-                
-                if (progress < 1) {
-                    requestAnimationFrame(step);
-                } else {
-                    element.textContent = end.toLocaleString();
-                }
-            };
-            step();
-        }
-
-        // Update all stats
-        async function updateStats() {
-            const piHoleData = await fetchPiHoleStats();
-            updateSystemStatus(piHoleData.status);
-        }
-
-        // Update system status indicator
-        function updateSystemStatus(piHoleStatus) {
-            const statusIndicator = document.getElementById('statusIndicator');
-            const statusText = document.getElementById('statusText');
-            const statusDot = statusIndicator.querySelector('.status-dot');
-            
-            if (piHoleStatus === 'Connected') {
-                statusText.textContent = 'All Systems Operational';
-                statusDot.style.background = 'var(--success)';
-                statusIndicator.style.background = 'rgba(16, 185, 129, 0.1)';
-                statusIndicator.style.borderColor = 'rgba(16, 185, 129, 0.3)';
-            } else {
-                statusText.textContent = 'Partial System Availability';
-                statusDot.style.background = '#ffaa00';
-                statusIndicator.style.background = 'rgba(255, 170, 0, 0.1)';
-                statusIndicator.style.borderColor = 'rgba(255, 170, 0, 0.3)';
-            }
-        }
 
         // Elements
         const loginScreen = document.getElementById('loginScreen');
@@ -1092,12 +941,6 @@
                     card.style.transform = 'translateY(0)';
                 }, index * 200);
             });
-
-            // Load stats after animation
-            setTimeout(() => updateStats(), 1000);
-            
-            // Auto-refresh stats every 60 seconds
-            setInterval(updateStats, 60000);
         }
 
         // Event listeners
@@ -1108,14 +951,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
             checkAuthentication();
-        });
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 'r' && !loginScreen.classList.contains('hidden')) {
-                e.preventDefault();
-                updateStats();
-            }
         });
     </script>
 </body>
