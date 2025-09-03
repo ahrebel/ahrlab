@@ -12,190 +12,236 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 100%);
-            color: #e0e0e0;
-            min-height: 100vh;
-            padding: 20px;
+        :root {
+            --primary: #00d4ff;
+            --primary-dark: #0099cc;
+            --secondary: #7c3aed;
+            --accent: #ff6b6b;
+            --success: #10b981;
+            --bg-dark: #0a0a1f;
+            --bg-gradient: linear-gradient(135deg, #0a0a1f 0%, #1a1a3a 50%, #0f1f3a 100%);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-hover: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
         }
 
-        /* Login Screen Styles */
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+            opacity: 0;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 0.4;
+            }
+            50% { 
+                opacity: 0.6;
+                transform: translateY(-50vh) scale(1);
+            }
+            90% {
+                opacity: 0.4;
+            }
+        }
+
+        /* Login Screen */
         .login-container {
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 100%);
+            inset: 0;
+            background: var(--bg-gradient);
             z-index: 1000;
+            backdrop-filter: blur(10px);
         }
 
         .login-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 24px;
+            padding: 3.5rem;
+            border: 1px solid var(--border);
             backdrop-filter: blur(20px);
             text-align: center;
-            max-width: 400px;
-            width: 100%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            opacity: 0.05;
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
         }
 
         .login-logo {
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+            z-index: 2;
         }
 
-        .login-logo svg {
-            filter: drop-shadow(0 4px 8px rgba(0, 212, 255, 0.3));
+        .login-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .login-subtitle {
-            color: #888;
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
         }
 
         .login-form {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .input-group {
+            position: relative;
         }
 
         .login-input {
-            padding: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            width: 100%;
+            padding: 1.2rem 1.2rem 1.2rem 3rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
             font-size: 1rem;
-            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
             transition: all 0.3s ease;
         }
 
         .login-input:focus {
             outline: none;
-            border-color: #00d4ff;
-            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
-            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.1);
         }
 
-        .login-input::placeholder {
-            color: #999;
+        .login-input:focus + .input-icon {
+            color: var(--primary);
         }
 
         .login-button {
-            padding: 1rem;
-            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .login-button:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .login-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
         }
 
         .login-error {
-            color: #ff6b6b;
-            margin-top: 1rem;
-            padding: 0.8rem;
+            color: var(--accent);
+            margin-top: 1.5rem;
+            padding: 1rem;
             background: rgba(255, 107, 107, 0.1);
-            border-radius: 8px;
-            border: 1px solid rgba(255, 107, 107, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
             font-size: 0.9rem;
+            animation: slideIn 0.3s ease;
         }
 
-        .hidden {
-            display: none !important;
-        }
-
-        /* Dashboard Styles */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem 0;
-            position: relative;
-        }
-
-        .logout-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .logout-button:hover {
-            background: rgba(255, 107, 107, 0.2);
-            border-color: rgba(255, 107, 107, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .logo-container {
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .logo {
-            max-width: 280px;
-            height: auto;
-        }
-
-        .logo svg {
-            filter: drop-shadow(0 4px 8px rgba(0, 212, 255, 0.3));
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #888;
-            margin-bottom: 1rem;
-        }
-
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 255, 0, 0.1);
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 255, 0, 0.3);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #00ff00;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes shake {
@@ -204,22 +250,125 @@
             75% { transform: translateX(10px); }
         }
 
+        .hidden {
+            display: none !important;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        .header-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .header-button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .logout-button:hover {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: rgba(255, 107, 107, 0.5);
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.6;
+                transform: scale(1.2);
+            }
+        }
+
+        /* Services Grid */
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 2rem;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
         }
 
         .service-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, var(--card-bg), rgba(255, 255, 255, 0.02));
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
 
         .service-card::before {
@@ -229,8 +378,8 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.6s;
         }
 
         .service-card:hover::before {
@@ -238,392 +387,423 @@
         }
 
         .service-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(0, 212, 255, 0.5);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--primary);
+            background: linear-gradient(135deg, var(--card-hover), rgba(255, 255, 255, 0.04));
+            box-shadow: 
+                0 20px 40px rgba(0, 212, 255, 0.15),
+                0 0 60px rgba(0, 212, 255, 0.05);
         }
 
         .service-header {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
         }
 
         .service-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-icon::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .service-card:hover .service-icon::after {
+            transform: translateX(100%);
         }
 
         .pihole { 
-            background: linear-gradient(45deg, #96060c, #d20a13); 
+            background: linear-gradient(135deg, #96060c, #d20a13);
+            box-shadow: 0 4px 15px rgba(210, 10, 19, 0.3);
         }
         
         .llm { 
-            background: linear-gradient(45deg, #7c3aed, #a855f7); 
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
         }
 
         .service-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .service-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--success);
+        }
+
+        .status-badge {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
 
         .service-description {
-            color: #ccc;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .service-stats {
+            display: flex;
+            gap: 2rem;
             margin-bottom: 1.5rem;
-            line-height: 1.6;
+            padding: 1rem 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-item {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.25rem;
         }
 
         .service-link {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            gap: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             text-decoration: none;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .service-link:hover::before {
+            width: 150px;
+            height: 150px;
         }
 
         .service-link:hover {
             transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
         }
 
-        .stats-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: 3rem;
             padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 2rem;
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
         }
 
-        .stats-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #fff;
-            text-align: center;
+        .quick-actions-title {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
         }
 
-        .stats-grid {
+        .actions-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 1rem;
         }
 
-        .stat-item {
-            text-align: center;
+        .action-button {
             padding: 1rem;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9rem;
         }
 
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #00d4ff;
+        .action-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            border-color: var(--primary);
         }
 
-        .stat-label {
-            color: #888;
-            margin-top: 0.5rem;
+        .action-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
         }
 
+        /* Footer */
         footer {
             text-align: center;
-            padding: 2rem 0;
-            color: #666;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem 0 2rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
         }
 
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .services-grid {
                 grid-template-columns: 1fr;
             }
             
-            .service-card {
-                padding: 1.5rem;
-            }
-
-            .login-card {
-                margin: 1rem;
-                padding: 2rem;
-            }
-
-            .logout-button {
+            .header-actions {
                 position: relative;
                 top: auto;
                 right: auto;
                 margin-bottom: 1rem;
+                justify-content: center;
             }
 
-            .logo svg {
-                width: 240px;
-                height: auto;
+            .quick-actions {
+                padding: 1.5rem;
             }
+
+            .actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            margin-bottom: 0.5rem;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
         }
     </style>
 </head>
 <body>
+    <!-- Background Particles -->
+    <div class="particles" id="particles"></div>
+
     <!-- Login Screen -->
     <div id="loginScreen" class="login-container">
         <div class="login-card">
             <div class="login-logo">
-                <svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                     <defs>
-                        <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
-                            <stop offset="50%" style="stop-color:#0099cc;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#0066aa;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#0099cc;stop-opacity:1" />
                         </linearGradient>
-                        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#4ecdc4;stop-opacity:1" />
-                        </linearGradient>
-                        <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.8" />
-                            <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0" />
-                        </radialGradient>
-                        <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#00d4ff" flood-opacity="0.3"/>
-                        </filter>
-                        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <filter id="glow">
                             <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                            <feMerge> 
+                            <feMerge>
                                 <feMergeNode in="coloredBlur"/>
                                 <feMergeNode in="SourceGraphic"/>
                             </feMerge>
                         </filter>
                     </defs>
-                    <circle cx="40" cy="40" r="35" fill="url(#glowGradient)" opacity="0.3">
-                        <animate attributeName="r" values="35;37;35" dur="4s" repeatCount="indefinite"/>
-                    </circle>
-                    <polygon points="40,10 55,20 55,35 40,45 25,35 25,20" 
-                            fill="url(#mainGradient)" 
-                            stroke="#00d4ff" 
-                            stroke-width="2" 
-                            filter="url(#dropShadow)">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#logoGrad)" stroke-width="2" opacity="0.3"/>
+                    <circle cx="50" cy="50" r="35" fill="none" stroke="url(#logoGrad)" stroke-width="1" opacity="0.5"/>
+                    <polygon points="50,20 65,30 65,45 50,60 35,45 35,30" 
+                            fill="url(#logoGrad)" 
+                            filter="url(#glow)"
+                            opacity="0.9">
                         <animateTransform 
-                        attributeName="transform" 
-                        type="rotate" 
-                        values="0 40 27.5;360 40 27.5" 
-                        dur="20s" 
-                        repeatCount="indefinite"/>
+                            attributeName="transform" 
+                            type="rotate" 
+                            values="0 50 40;360 50 40" 
+                            dur="20s" 
+                            repeatCount="indefinite"/>
                     </polygon>
-                    <g stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.8">
-                        <line x1="40" y1="15" x2="40" y2="25">
-                            <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
-                        </line>
-                        <line x1="40" y1="30" x2="40" y2="40">
-                            <animate attributeName="stroke-opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
-                        </line>
-                        <line x1="30" y1="27.5" x2="35" y2="27.5">
-                            <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
-                        </line>
-                        <line x1="45" y1="27.5" x2="50" y2="27.5">
-                            <animate attributeName="stroke-opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
-                        </line>
-                        <circle cx="40" cy="20" r="1.5" fill="#ffffff">
-                            <animate attributeName="fill-opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite"/>
-                        </circle>
-                        <circle cx="40" cy="35" r="1.5" fill="#ffffff">
-                            <animate attributeName="fill-opacity" values="1;0.5;1" dur="1s" repeatCount="indefinite"/>
-                        </circle>
-                    </g>
-                    <text x="90" y="35" 
-                        font-family="'Segoe UI', Arial, sans-serif" 
-                        font-size="24" 
-                        font-weight="bold" 
-                        fill="url(#mainGradient)" 
-                        filter="url(#glow)">AHR</text>
-                    <text x="90" y="55" 
-                        font-family="'Segoe UI', Arial, sans-serif" 
-                        font-size="16" 
-                        font-weight="300" 
-                        fill="#888888" 
-                        letter-spacing="3px">LAB</text>
-                    <line x1="75" y1="40" x2="85" y2="40" 
-                        stroke="url(#accentGradient)" 
-                        stroke-width="2" 
-                        opacity="0.6">
-                        <animate attributeName="stroke-dasharray" values="0,20;20,0;0,20" dur="3s" repeatCount="indefinite"/>
-                    </line>
-                    <g opacity="0.4">
-                        <circle r="2" fill="#00d4ff">
-                            <animateMotion dur="4s" repeatCount="indefinite" rotate="auto">
-                                <path d="M75,40 Q100,20 140,40 Q160,60 180,40"/>
-                            </animateMotion>
-                            <animate attributeName="opacity" values="0;1;0" dur="4s" repeatCount="indefinite"/>
-                        </circle>
-                        <circle r="1.5" fill="#4ecdc4">
-                            <animateMotion dur="3s" repeatCount="indefinite" rotate="auto" begin="1s">
-                                <path d="M75,40 Q90,60 120,40 Q150,20 180,40"/>
-                            </animateMotion>
-                            <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite" begin="1s"/>
-                        </circle>
-                    </g>
                 </svg>
             </div>
-            <div class="login-subtitle">Enter access code to continue</div>
+            <h1 class="login-title">AHR LAB</h1>
+            <div class="login-subtitle">Secure Homelab Access Portal</div>
             <form class="login-form" id="loginForm">
-                <input 
-                    type="password" 
-                    id="passwordInput" 
-                    class="login-input" 
-                    placeholder="Access code"
-                    autocomplete="current-password"
-                    required
-                >
+                <div class="input-group">
+                    <input 
+                        type="password" 
+                        id="passwordInput" 
+                        class="login-input" 
+                        placeholder="Enter access code"
+                        autocomplete="current-password"
+                        required
+                    >
+                    <i class="fas fa-lock input-icon"></i>
+                </div>
                 <button type="submit" class="login-button">
-                    <i class="fas fa-unlock"></i> Access Dashboard
+                    <i class="fas fa-sign-in-alt"></i> Access Dashboard
                 </button>
             </form>
             <div id="loginError" class="login-error hidden">
-                <i class="fas fa-exclamation-triangle"></i> Incorrect access code. Please try again.
+                <i class="fas fa-exclamation-circle"></i> Invalid access code. Please try again.
             </div>
         </div>
     </div>
 
     <!-- Dashboard Content -->
-    <div id="dashboard" class="hidden">
+    <div id="dashboard" class="dashboard hidden">
         <div class="container">
             <header>
-                <button id="logoutBtn" class="logout-button">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
+                <div class="header-actions">
+                    <button class="header-button tooltip" data-tooltip="Refresh Stats" onclick="updateStats()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button id="logoutBtn" class="header-button logout-button">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
 
                 <div class="logo-container">
-                    <svg class="logo" width="280" height="100" viewBox="0 0 280 100" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="300" height="100" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
                         <defs>
-                            <linearGradient id="mainGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
                                 <stop offset="50%" style="stop-color:#0099cc;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#0066aa;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
                             </linearGradient>
-                            <linearGradient id="accentGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#4ecdc4;stop-opacity:1" />
-                            </linearGradient>
-                            <radialGradient id="glowGradient2" cx="50%" cy="50%" r="50%">
-                                <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.8" />
-                                <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0" />
-                            </radialGradient>
-                            <filter id="dropShadow2" x="-20%" y="-20%" width="140%" height="140%">
-                                <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#00d4ff" flood-opacity="0.3"/>
-                            </filter>
-                            <filter id="glow2" x="-50%" y="-50%" width="200%" height="200%">
-                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                                <feMerge> 
-                                    <feMergeNode in="coloredBlur"/>
-                                    <feMergeNode in="SourceGraphic"/>
-                                </feMerge>
-                            </filter>
                         </defs>
-                        <circle cx="50" cy="50" r="44" fill="url(#glowGradient2)" opacity="0.3">
-                            <animate attributeName="r" values="44;47;44" dur="4s" repeatCount="indefinite"/>
-                        </circle>
-                        <polygon points="50,15 65,25 65,40 50,55 35,40 35,25" 
-                                fill="url(#mainGradient2)" 
-                                stroke="#00d4ff" 
-                                stroke-width="2" 
-                                filter="url(#dropShadow2)">
-                            <animateTransform 
-                            attributeName="transform" 
-                            type="rotate" 
-                            values="0 50 35;360 50 35" 
-                            dur="20s" 
-                            repeatCount="indefinite"/>
-                        </polygon>
-                        <g stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.8">
-                            <line x1="50" y1="20" x2="50" y2="30">
-                                <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
-                            </line>
-                            <line x1="50" y1="40" x2="50" y2="50">
-                                <animate attributeName="stroke-opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
-                            </line>
-                            <line x1="40" y1="35" x2="45" y2="35">
-                                <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
-                            </line>
-                            <line x1="55" y1="35" x2="60" y2="35">
-                                <animate attributeName="stroke-opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
-                            </line>
-                            <circle cx="50" cy="25" r="1.5" fill="#ffffff">
-                                <animate attributeName="fill-opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite"/>
-                            </circle>
-                            <circle cx="50" cy="45" r="1.5" fill="#ffffff">
-                                <animate attributeName="fill-opacity" values="1;0.5;1" dur="1s" repeatCount="indefinite"/>
-                            </circle>
-                        </g>
-                        <text x="120" y="45" 
-                            font-family="'Segoe UI', Arial, sans-serif" 
-                            font-size="32" 
+                        <text x="150" y="45" 
+                            font-family="'Inter', sans-serif" 
+                            font-size="42" 
                             font-weight="bold" 
-                            fill="url(#mainGradient2)" 
-                            filter="url(#glow2)">AHR</text>
-                        <text x="120" y="70" 
-                            font-family="'Segoe UI', Arial, sans-serif" 
-                            font-size="20" 
+                            fill="url(#headerGrad)" 
+                            text-anchor="middle">AHR LAB</text>
+                        <text x="150" y="75" 
+                            font-family="'Inter', sans-serif" 
+                            font-size="14" 
                             font-weight="300" 
                             fill="#888888" 
-                            letter-spacing="4px">LAB</text>
-                        <line x1="95" y1="50" x2="110" y2="50" 
-                            stroke="url(#accentGradient2)" 
-                            stroke-width="2" 
-                            opacity="0.6">
-                            <animate attributeName="stroke-dasharray" values="0,20;20,0;0,20" dur="3s" repeatCount="indefinite"/>
-                        </line>
-                        <g opacity="0.4">
-                            <circle r="2" fill="#00d4ff">
-                                <animateMotion dur="4s" repeatCount="indefinite" rotate="auto">
-                                    <path d="M95,50 Q130,25 180,50 Q220,75 260,50"/>
-                                </animateMotion>
-                                <animate attributeName="opacity" values="0;1;0" dur="4s" repeatCount="indefinite"/>
-                            </circle>
-                            <circle r="1.5" fill="#4ecdc4">
-                                <animateMotion dur="3s" repeatCount="indefinite" rotate="auto" begin="1s">
-                                    <path d="M95,50 Q120,75 160,50 Q200,25 260,50"/>
-                                </animateMotion>
-                                <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite" begin="1s"/>
-                            </circle>
-                        </g>
+                            letter-spacing="5px"
+                            text-anchor="middle">HOMELAB CONTROL CENTER</text>
                     </svg>
                 </div>
                 
-                <div class="subtitle">Personal Homelab Dashboard</div>
-                <div class="status-indicator">
+                <div class="subtitle">Self-Hosted Infrastructure Dashboard</div>
+                <div class="status-indicator" id="statusIndicator">
                     <div class="status-dot"></div>
-                    <span>All Systems Operational</span>
+                    <span id="statusText">All Systems Operational</span>
                 </div>
             </header>
 
-            <div class="stats-section">
-                <h2 class="stats-title">System Overview</h2>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value" id="uptime">99.8%</div>
-                        <div class="stat-label">Uptime</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="services">2</div>
-                        <div class="stat-label">Active Services</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="blocked">-</div>
-                        <div class="stat-label">Queries Blocked Today</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="storage">1.2TB</div>
-                        <div class="stat-label">Storage Used</div>
-                    </div>
+            <div class="quick-actions">
+                <h3 class="quick-actions-title">Quick Actions</h3>
+                <div class="actions-grid">
+                    <button class="action-button" onclick="window.open('http://localhost:8081/admin/', '_blank')">
+                        <div class="action-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div>Pi-hole Admin</div>
+                    </button>
+                    <button class="action-button" onclick="window.open('http://llm.ahrlab.net', '_blank')">
+                        <div class="action-icon"><i class="fas fa-robot"></i></div>
+                        <div>AI Assistant</div>
+                    </button>
+                    <button class="action-button" onclick="updateStats()">
+                        <div class="action-icon"><i class="fas fa-chart-line"></i></div>
+                        <div>Refresh Stats</div>
+                    </button>
+                    <button class="action-button" onclick="alert('Network diagnostics coming soon!')">
+                        <div class="action-icon"><i class="fas fa-network-wired"></i></div>
+                        <div>Network Tools</div>
+                    </button>
                 </div>
             </div>
 
@@ -633,14 +813,30 @@
                         <div class="service-icon pihole">
                             <i class="fas fa-shield-alt"></i>
                         </div>
-                        <div class="service-title">Pi-hole</div>
+                        <div>
+                            <div class="service-title">Pi-hole</div>
+                            <div class="service-status">
+                                <div class="status-badge"></div>
+                                <span id="piholeStatus">Online</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="service-description">
-                        Network-wide ad blocking and DNS filtering. Protecting your network from unwanted content and improving browsing performance.
+                        Network-wide ad blocking and DNS filtering system protecting all devices on your network from unwanted content, tracking, and malicious domains.
                     </div>
-                    <a href="http://localhost:8081/admin/" class="service-link">
+                    <div class="service-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="blockedQueries">-</span>
+                            <span class="stat-label">Blocked Today</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalQueries">-</span>
+                            <span class="stat-label">Total Queries</span>
+                        </div>
+                    </div>
+                    <a href="http://localhost:8081/admin/" class="service-link" target="_blank">
                         <i class="fas fa-external-link-alt"></i>
-                        Access Pi-hole
+                        Open Pi-hole Dashboard
                     </a>
                 </div>
 
@@ -649,26 +845,68 @@
                         <div class="service-icon llm">
                             <i class="fas fa-robot"></i>
                         </div>
-                        <div class="service-title">Local LLM</div>
+                        <div>
+                            <div class="service-title">Local LLM</div>
+                            <div class="service-status">
+                                <div class="status-badge"></div>
+                                <span>Online</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="service-description">
-                        Self-hosted large language model for private AI assistance. Chat with AI while keeping your data completely local and secure.
+                        Private AI assistant running locally on your hardware. Get intelligent responses while maintaining complete data privacy and control.
                     </div>
-                    <a href="http://llm.ahrlab.net" class="service-link">
+                    <div class="service-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">100%</span>
+                            <span class="stat-label">Privacy</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">Local</span>
+                            <span class="stat-label">Processing</span>
+                        </div>
+                    </div>
+                    <a href="http://llm.ahrlab.net" class="service-link" target="_blank">
                         <i class="fas fa-external-link-alt"></i>
-                        Chat with AI
+                        Start AI Chat Session
                     </a>
                 </div>
             </div>
 
             <footer>
-                <p>&copy; 2025 AHR Lab. Self-hosted and secured(ish).</p>
-                <p>Built for learning, privacy, and complete control over my digital life.</p>
+                <p>&copy; 2025 AHR Lab - Personal Homelab Infrastructure</p>
+                <p>Building a self-hosted future, one service at a time.</p>
+                <div class="footer-links">
+                    <a href="#" class="footer-link" onclick="alert('Documentation coming soon!')">
+                        <i class="fas fa-book"></i> Docs
+                    </a>
+                    <a href="#" class="footer-link" onclick="alert('System logs coming soon!')">
+                        <i class="fas fa-file-alt"></i> Logs
+                    </a>
+                    <a href="#" class="footer-link" onclick="alert('Settings coming soon!')">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </div>
             </footer>
         </div>
     </div>
 
     <script>
+        // Generate particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
         // Configuration - Daily password system
         function generateDailyPassword() {
             const today = new Date();
@@ -680,9 +918,17 @@
         const DASHBOARD_PASSWORD = generateDailyPassword();
         const SESSION_KEY = 'ahrlab_authenticated';
         
-        // Updated Pi-hole stats function to use your API
+        // Pi-hole stats function
         async function fetchPiHoleStats() {
+            const statusElement = document.getElementById('piholeStatus');
+            const blockedElement = document.getElementById('blockedQueries');
+            const totalElement = document.getElementById('totalQueries');
+            
             try {
+                // Show loading state
+                blockedElement.innerHTML = '<span class="loading"></span>';
+                totalElement.innerHTML = '<span class="loading"></span>';
+                
                 const response = await fetch('http://localhost:3001', {
                     method: 'GET',
                     headers: {
@@ -691,57 +937,84 @@
                 });
                 
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    throw new Error(`HTTP ${response.status}`);
                 }
                 
                 const data = await response.json();
                 
                 if (data.error) {
-                    throw new Error(data.message || 'API returned an error');
+                    throw new Error(data.message || 'API error');
                 }
                 
+                // Update stats with animation
+                animateValue(blockedElement, 0, data.ads_blocked_today || 0, 1000);
+                animateValue(totalElement, 0, data.dns_queries_today || 0, 1000);
+                statusElement.textContent = 'Online';
+                statusElement.style.color = 'var(--success)';
+                
                 return {
-                    queriesBlocked: data.ads_blocked_today?.toLocaleString() || '0',
                     status: 'Connected',
-                    totalQueries: data.dns_queries_today?.toLocaleString() || '0',
-                    percentBlocked: data.percent_blocked?.toFixed(1) + '%' || '0%'
+                    blocked: data.ads_blocked_today || 0,
+                    total: data.dns_queries_today || 0,
+                    percent: data.percent_blocked || 0
                 };
                 
             } catch (error) {
-                console.error('Failed to fetch Pi-hole stats:', error);
+                console.error('Pi-hole API error:', error);
+                blockedElement.textContent = 'N/A';
+                totalElement.textContent = 'N/A';
+                statusElement.textContent = 'Offline';
+                statusElement.style.color = 'var(--accent)';
+                
                 return { 
-                    queriesBlocked: 'API Error', 
-                    status: 'Pi-hole API Offline',
-                    totalQueries: '-',
-                    percentBlocked: '-'
+                    status: 'Offline',
+                    blocked: 0,
+                    total: 0,
+                    percent: 0
                 };
             }
         }
 
-        // Update stats
+        // Animate number counting
+        function animateValue(element, start, end, duration) {
+            const startTimestamp = Date.now();
+            const step = () => {
+                const currentTimestamp = Date.now();
+                const progress = Math.min((currentTimestamp - startTimestamp) / duration, 1);
+                const current = Math.floor(progress * (end - start) + start);
+                element.textContent = current.toLocaleString();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    element.textContent = end.toLocaleString();
+                }
+            };
+            step();
+        }
+
+        // Update all stats
         async function updateStats() {
             const piHoleData = await fetchPiHoleStats();
-            const blockedElement = document.getElementById('blocked');
-            
-            if (blockedElement) {
-                blockedElement.textContent = piHoleData.queriesBlocked;
-            }
+            updateSystemStatus(piHoleData.status);
+        }
 
-            // Update status indicator based on API response
-            const statusIndicator = document.querySelector('.status-indicator');
-            const statusText = statusIndicator.querySelector('span');
+        // Update system status indicator
+        function updateSystemStatus(piHoleStatus) {
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
             const statusDot = statusIndicator.querySelector('.status-dot');
             
-            if (piHoleData.status === 'Connected') {
+            if (piHoleStatus === 'Connected') {
                 statusText.textContent = 'All Systems Operational';
-                statusDot.style.background = '#00ff00';
-                statusIndicator.style.background = 'rgba(0, 255, 0, 0.1)';
-                statusIndicator.style.borderColor = 'rgba(0, 255, 0, 0.3)';
+                statusDot.style.background = 'var(--success)';
+                statusIndicator.style.background = 'rgba(16, 185, 129, 0.1)';
+                statusIndicator.style.borderColor = 'rgba(16, 185, 129, 0.3)';
             } else {
-                statusText.textContent = 'Pi-hole API Issues';
-                statusDot.style.background = '#ff6b6b';
-                statusIndicator.style.background = 'rgba(255, 107, 107, 0.1)';
-                statusIndicator.style.borderColor = 'rgba(255, 107, 107, 0.3)';
+                statusText.textContent = 'Partial System Availability';
+                statusDot.style.background = '#ffaa00';
+                statusIndicator.style.background = 'rgba(255, 170, 0, 0.1)';
+                statusIndicator.style.borderColor = 'rgba(255, 170, 0, 0.3)';
             }
         }
 
@@ -753,7 +1026,7 @@
         const loginError = document.getElementById('loginError');
         const logoutBtn = document.getElementById('logoutBtn');
 
-        // Check if user is already authenticated
+        // Check authentication
         function checkAuthentication() {
             const isAuthenticated = sessionStorage.getItem(SESSION_KEY) === 'true';
             if (isAuthenticated) {
@@ -792,10 +1065,10 @@
                 passwordInput.focus();
                 
                 // Shake animation
-                loginError.style.animation = 'none';
+                loginError.style.animation = 'shake 0.5s ease-in-out';
                 setTimeout(() => {
-                    loginError.style.animation = 'shake 0.5s ease-in-out';
-                }, 10);
+                    loginError.style.animation = '';
+                }, 500);
             }
         }
 
@@ -806,29 +1079,24 @@
             passwordInput.value = '';
         }
 
-        // Initialize dashboard animations and data
+        // Initialize dashboard
         function initializeDashboard() {
-            // Animate stats on load
-            const statValues = document.querySelectorAll('.stat-value');
-            statValues.forEach(stat => {
-                stat.style.opacity = '0';
-                stat.style.transform = 'translateY(20px)';
+            // Fade in animation
+            const cards = document.querySelectorAll('.service-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
             });
 
-            setTimeout(() => {
-                statValues.forEach((stat, index) => {
-                    setTimeout(() => {
-                        stat.style.transition = 'all 0.6s ease';
-                        stat.style.opacity = '1';
-                        stat.style.transform = 'translateY(0)';
-                    }, index * 200);
-                });
-            }, 500);
-
-            // Load Pi-hole stats after a short delay
-            setTimeout(() => updateStats(), 2000);
+            // Load stats after animation
+            setTimeout(() => updateStats(), 1000);
             
-            // Update stats every 60 seconds
+            // Auto-refresh stats every 60 seconds
             setInterval(updateStats, 60000);
         }
 
@@ -836,23 +1104,19 @@
         loginForm.addEventListener('submit', handleLogin);
         logoutBtn.addEventListener('click', handleLogout);
 
-        // Service link tracking
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.service-link')) {
-                const serviceName = e.target.closest('.service-card').querySelector('.service-title').textContent;
-                console.log(`Accessing service: ${serviceName}`);
-            }
-        });
-
-        // Enter key support
-        passwordInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                handleLogin(e);
-            }
-        });
-
         // Initialize on page load
-        document.addEventListener('DOMContentLoaded', checkAuthentication);
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            checkAuthentication();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'r' && !loginScreen.classList.contains('hidden')) {
+                e.preventDefault();
+                updateStats();
+            }
+        });
     </script>
 </body>
 </html>
